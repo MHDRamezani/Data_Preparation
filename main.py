@@ -1,6 +1,6 @@
 """
 Author: Mohammad Ramezani
-Created: July 30, 2022
+Created: July 31, 2022
 """
 
 import glob
@@ -9,6 +9,7 @@ import winsound
 from os import path
 import numpy as np
 import pretty_midi
+from scipy import sparse
 import matplotlib.pyplot as plt
 from colorama import Fore, Back, Style
 from datetime import datetime
@@ -85,8 +86,8 @@ def midi_to_pianoroll():
                 raw_midi_data = pretty_midi.PrettyMIDI(midi_filename)
                 piano_roll = raw_midi_data.get_piano_roll(fs=100)
                 piano_roll = piano_roll.astype(np.float16)
-
-                database_piano_roll.append([i, j, piano_roll])
+                sparse_piano_roll = sparse.csr_matrix(piano_roll)
+                database_piano_roll.append([i, j, sparse_piano_roll])
 
     np.save('database_pianoroll.npy', database_piano_roll, allow_pickle=True)
     print('The piano roll for all samples were created and stored in the directory!')
@@ -101,7 +102,7 @@ def sampling_pianoroll(piano_rolls):
 
         class_num = piano_rolls[track][0]
         track_num = piano_rolls[track][1]
-        piano_roll = piano_rolls[track][2]
+        piano_roll = piano_rolls[track][2].toarray()
 
         height, width = piano_roll.shape
         shift_step = 0
