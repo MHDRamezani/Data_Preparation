@@ -9,8 +9,8 @@ import winsound
 from os import path
 import numpy as np
 import pretty_midi
-from scipy import sparse
 import matplotlib.pyplot as plt
+from scipy import sparse
 from colorama import Fore, Back, Style
 from datetime import datetime
 
